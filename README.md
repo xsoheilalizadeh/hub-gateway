@@ -29,5 +29,5 @@ Enter command: get
 Redirect to https://google.com 
 ```
 
-[client]:
-[server]:
+[client]:https://github.com/xsoheilalizadeh/hub-gateway/tree/master/client
+[server]:https://github.com/xsoheilalizadeh/hub-gateway/tree/master/server
