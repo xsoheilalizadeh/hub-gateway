@@ -23,7 +23,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-cache-  
             
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@1.86
             
       - uses: Swatinem/rust-cache@v2
         with:
