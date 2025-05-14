@@ -23,6 +23,6 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
     cargo build --release
 
-FROM debian:bullseye-slim  
-COPY --from=builder /app/target/release/connect /usr/local/bin/
+FROM scratch AS runtime
+COPY --from=builder /app/target/release/connect /connect
 ENTRYPOINT ["connect"]    
