@@ -1,0 +1,14 @@
+/target
+**/target/
+
+.DS_Store
+**/.DS_Store
+
+node_modules/
+
+.idea/
+
+Cargo.lock
+.env
+**/.env
+**/.env.local
