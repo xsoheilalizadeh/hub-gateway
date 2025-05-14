@@ -32,3 +32,10 @@ jobs:
           cache-all-crates: true
           shared-key: rust-cache-${{ hashFiles('**/Cargo.lock') }}
           save-if: ${{ github.ref == 'refs/heads/main' }}            
+          
+      - name: Build & Cache Image
+        run: |
+          docker buildx build \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
+            --tag my-org/my-image:latest .          
