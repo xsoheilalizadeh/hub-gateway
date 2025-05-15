@@ -42,8 +42,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
       --manifest-path connect/Cargo.toml \
       --profile build-speed \
       --bin connect \
-      --offline
-      
+
 FROM scratch AS runtime
 COPY --from=builder /app/connect/target/build-speed/connect /usr/local/bin/connect
 ENTRYPOINT ["/usr/local/bin/connect"]
