@@ -6,7 +6,20 @@ WORKDIR /app
 COPY .cargo/config.toml /usr/local/cargo/config.toml
 
 RUN cargo install cargo-chef --locked
-COPY . .
+
+RUN printf '[workspace]\nresolver = "3"\nmembers = ["common","connect"]\n' \
+    > Cargo.toml
+
+COPY common/Cargo.toml common/
+COPY connect/Cargo.toml connect/
+COPY common/src/ common/src/
+COPY connect/src/ connect/src/
+
+
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/local/cargo/git \
+    cargo generate-lockfile   
+
 RUN cargo chef prepare --recipe-path recipe.json
 
 
@@ -18,13 +31,15 @@ WORKDIR /app
 # Cache your registry & git index between builds (BuildKit mount)
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
-    cargo chef cook --profile build-speed --recipe-path recipe.json
+    cargo chef cook --locked --offline --profile build-speed --recipe-path recipe.json
 
-COPY . .
+COPY common/Cargo.toml common/
+COPY connect/Cargo.toml connect/
+COPY common/src/ common/src/
+COPY connect/src/ connect/src/
 
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
-    --mount=type=cache,target=/app/target \
     cargo build --profile build-speed
 
 FROM scratch AS runtime
