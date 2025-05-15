@@ -2,46 +2,45 @@ FROM rust:1.86-alpine AS planner
 RUN apk add --no-cache musl-dev
 
 WORKDIR /app
-
 COPY .cargo/config.toml /usr/local/cargo/config.toml
-
 RUN cargo install cargo-chef --locked
 
-RUN printf '[workspace]\nresolver = "3"\nmembers = ["common","connect"]\n' \
-    > Cargo.toml
+COPY connect/Cargo.toml connect/Cargo.toml
+COPY common/Cargo.toml  common/Cargo.toml
 
-COPY common/Cargo.toml common/
-COPY connect/Cargo.toml connect/
-COPY common/src/ common/src/
-COPY connect/src/ connect/src/
-
-
+WORKDIR /app/connect
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
-    cargo generate-lockfile   
+    cargo chef prepare \
+      --recipe-path ../recipe.json \
+      --bin connect
 
-RUN cargo chef prepare --recipe-path recipe.json
-
-
-FROM planner AS builder  
-COPY --from=planner /app/recipe.json recipe.json
-
+FROM planner AS builder
 WORKDIR /app
-
-# Cache your registry & git index between builds (BuildKit mount)
+COPY --from=planner /app/recipe.json ./
+    
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
-    cargo chef cook --locked --offline --profile build-speed --recipe-path recipe.json
+    --mount=type=cache,target=/app/target \
+    cargo chef cook \
+      --recipe-path recipe.json \
+      --manifest-path connect/Cargo.toml \
+      --bin connect \
+      --locked \
+      --offline \
+      --no-build
 
-COPY common/Cargo.toml common/
-COPY connect/Cargo.toml connect/
-COPY common/src/ common/src/
-COPY connect/src/ connect/src/
+COPY common/ common/
+COPY connect/ connect/
 
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
-    cargo build --profile build-speed
-
+    --mount=type=cache,target=/app/target \
+    cargo build \
+      --manifest-path connect/Cargo.toml \
+      --profile build-speed \
+      --bin connect    
+      
 FROM scratch AS runtime
-COPY --from=builder /app/target/build-speed/connect /usr/local/bin/
-ENTRYPOINT ["connect"]    
+COPY --from=builder /app/connect/target/build-speed/connect /usr/local/bin/connect
+ENTRYPOINT ["/usr/local/bin/connect"]
