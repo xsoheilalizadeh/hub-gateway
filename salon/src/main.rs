@@ -6,8 +6,8 @@ async fn main() {
         .await.unwrap()
         .text()
         .await.unwrap();
+     
+   let a = common::add(112, 121312333);
     
-   let a = common::add(112, 12132122223);
-    
-    println!("Connect IPcc  = {ip:?} {a:?}");
+    println!("Salon IP =  {ip:?} {a:?}  ");
 }

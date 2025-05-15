@@ -2,8 +2,9 @@ FROM rust:1.86-alpine AS planner
 RUN apk add --no-cache musl-dev
 
 WORKDIR /app
-COPY .cargo/config.toml /usr/local/cargo/config.toml
 RUN cargo install cargo-chef --locked
+
+COPY .cargo/config.toml /usr/local/cargo/config.toml
 
 COPY connect/Cargo.toml connect/Cargo.toml
 COPY common/Cargo.toml  common/Cargo.toml
@@ -25,6 +26,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
     cargo chef cook \
       --recipe-path recipe.json \
       --manifest-path connect/Cargo.toml \
+      --profile build-speed \
       --bin connect \
       --locked \
       --offline \

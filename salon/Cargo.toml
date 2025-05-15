@@ -1,14 +1,10 @@
 [package]
-name = "connect"
+name = "salon"
 version = "0.1.0"
 edition = "2024"
-
-[[bin]]
-name = "connect"
-path = "src/main.rs"
 
 [dependencies]
 reqwest = {version = "0.12", features = ["json", "rustls-tls"] , default-features = false}
 tokio = { version = "1", features = ["full"] }
+
 common = {path = "../common"}
-# chrono = "0.4.41"

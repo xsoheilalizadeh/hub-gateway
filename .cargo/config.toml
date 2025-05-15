@@ -4,15 +4,15 @@ jobs = 32
 [net]
 git-fetch-with-cli = true
 
-[profile.build-speed]     # custom profile named "build-speed"
-inherits = "dev"          # start from the fast dev defaults
-opt-level = 0             # no optimizations
-debug = false             # skip debug symbols
-incremental = true         # enable incremental compilation
-codegen-units = 256       # max parallel codegen
-lto = false               # disable link-time optimizations
-overflow-checks = false   # skip overflow checks
-debug-assertions = false  # skip debug assertions
+[profile.build-speed]
+inherits = "dev" 
+opt-level = 1           
+debug = false  
+incremental = true  
+codegen-units = 8     
+overflow-checks = false  
+debug-assertions = false  
+
 
 [profile.release]
 opt-level = 0
