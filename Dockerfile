@@ -41,7 +41,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
     cargo build \
       --manifest-path connect/Cargo.toml \
       --profile build-speed \
-      --bin connect \
+      --bin connect
 
 FROM scratch AS runtime
 COPY --from=builder /app/connect/target/build-speed/connect /usr/local/bin/connect
