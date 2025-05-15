@@ -1,4 +1,59 @@
-target/
-.git/
+# Exclude version control files
+.git
+.gitignore
+.gitattributes
+
+# Exclude build artifacts
+**/target/
+**/*.rs.bk
+
+# Exclude development files
+.vscode/
+.idea/
+*.iml
+.DS_Store
+*.pdb
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Exclude documentation
 *.md
-*.log
+LICENSE
+docs/
+
+# Exclude CI/CD files
+.github/
+.gitlab-ci.yml
+.travis.yml
+appveyor.yml
+
+# Exclude test files
+**/tests/
+**/*_test.rs
+**/test_*.rs
+**/__tests__/
+
+# Exclude examples and benchmarks
+**/examples/
+**/benches/
+
+# Keep only what's needed
+!.cargo/config.toml
+!Cargo.lock
+
+# Exclude Rust toolchain files
+rust-toolchain
+rust-toolchain.toml
+
+# Exclude unnecessary Cargo files
+.cargo/credentials
+.cargo/credentials.toml
+.cargo/registry/
+.cargo/git/
+
+# Exclude any local environment files
+.env
+.env.*
+*.local
